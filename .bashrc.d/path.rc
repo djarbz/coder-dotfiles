@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+echo "path.rc"
 # set PATH so it includes user's private bin if it exists
 NEWBIN="$HOME/bin"
 if ! [[ "$PATH" =~ "$NEWBIN" ]]; then

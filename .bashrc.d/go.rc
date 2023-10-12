@@ -3,10 +3,25 @@ if [ -d /usr/local/go ]; then
   sudo rm -rf /usr/local/go
 fi
 
-# Install Golang
-if ! command -v go &> /dev/null; then
+# If Go is installed, we will find it here.
+export GOROOT=$(find $HOME/go/ -maxdepth 1 -type d -name 'go*' -print | sort -V | tail -n1)
+
+# Install Golang if not already installed.
+if ! command -v "${GOROOT}/bin/go" &> /dev/null; then
   curl -Lo go_installer https://get.golang.org/linux && chmod +x go_installer && ./go_installer && rm go_installer
 fi
+
+# Ensure that GOROOT is set to an actual directory.
+export GOROOT=$(find $HOME/go/ -maxdepth 1 -type d -name 'go*' -print | sort -V | tail -n1)
+
+if command -v go &> /dev/null; then
+  NEWBIN="$(go env GOPATH)/bin"
+  if ! [[ "$PATH" =~ "$NEWBIN" ]]; then
+    [ -d "$NEWBIN" ] && PATH="$NEWBIN:$PATH"
+  fi
+fi
+
+export PATH
 
 if command -v go &> /dev/null; then
     go install golang.org/x/tools/cmd/goimports@latest
@@ -16,6 +31,3 @@ if command -v go &> /dev/null; then
     go install github.com/spf13/cobra-cli@latest
     go install github.com/swaggo/swag/cmd/swag@latest
 fi
-
-#export GOROOT=$(find $HOME/go/ -maxdepth 1 -type d -name 'go*' -print | sort -V | tail -n1)/bin
-export GOROOT=$HOME/go

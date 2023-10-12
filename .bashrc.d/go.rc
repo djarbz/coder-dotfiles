@@ -1,4 +1,3 @@
-echo "go.rc"
 if command -v go &> /dev/null; then
     go install golang.org/x/tools/cmd/goimports@latest
     go install github.com/fzipp/gocyclo/cmd/gocyclo@latest

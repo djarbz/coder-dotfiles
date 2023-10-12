@@ -1,4 +1,3 @@
-echo "misc.rc"
 # See what command you are using the most (this parses the history command)
 cm() {
   history | awk ' { a[$4]++ } END { for ( i in a ) print a[i], i | "sort -rn | head -n10"}' | awk '$1 > max{ max=$1} { bar=""; i=s=10*$1/max;while(i-->0)bar=bar"#"; printf "%25s %15d %s %s", $2, $1,bar, "\n"; }'

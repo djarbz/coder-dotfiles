@@ -1,4 +1,3 @@
-echo "colors.rc"
 alias diff='colordiff'
 
 # Colorized man pages, from:

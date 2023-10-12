@@ -1,4 +1,3 @@
-echo "files.rc"
 # Require confirmation before overwriting target files. This setting keeps me from deleting things I didn't expect to, etc
 alias cp='cp -i'
 alias mv='mv -i'

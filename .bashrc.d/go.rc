@@ -8,7 +8,8 @@ export GOROOT=$(find $HOME/go/ -maxdepth 1 -type d -name 'go*' -print | sort -V 
 
 # Install Golang if not already installed.
 if ! command -v "${GOROOT}/bin/go" &> /dev/null; then
-  curl -Lo go_installer https://get.golang.org/linux && chmod +x go_installer && ./go_installer && rm go_installer
+  echo "Installing Golang"
+  #curl -Lo go_installer https://get.golang.org/linux && chmod +x go_installer && ./go_installer && rm go_installer
 fi
 
 # Ensure that GOROOT is set to an actual directory.

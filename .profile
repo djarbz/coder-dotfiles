@@ -8,13 +8,14 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-# if running bash
+# If running bash
 if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
+    # Include .bashrc if it exists
     if [ -f "$HOME/.bashrc" ] && [[ "${BASH_SOURCE[1]}" == ".bash_aliases" ]]; then
         . "$HOME/.bashrc"
     fi
 
+    # Include .bashrc.d if it exists
     if [ -d ~/.bashrc.d ]; then
         for rc in ~/.bashrc.d/*; do
             if [ -f "$rc" ]; then
@@ -23,5 +24,5 @@ if [ -n "$BASH_VERSION" ]; then
         done
     fi
 
-       unset rc
+    unset rc
 fi

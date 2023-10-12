@@ -10,10 +10,10 @@ if ! [[ "$PATH" =~ "$NEWBIN" ]]; then
 fi
 
 if command -v go &> /dev/null; then
-    NEWBIN="$(go env GOPATH)/bin"
-    if ! [[ "$PATH" =~ "$NEWBIN" ]]; then
+  NEWBIN="$(go env GOPATH)/bin"
+  if ! [[ "$PATH" =~ "$NEWBIN" ]]; then
     [ -d "$NEWBIN" ] && PATH="$NEWBIN:$PATH"
-    fi
+  fi
 fi
 
 export PATH

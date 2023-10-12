@@ -1,3 +1,13 @@
+# Remove the systemwide version of GO
+if [ -d /usr/local/go ]; then
+  sudo rm -rf /usr/local/go
+fi
+
+# Install Golang
+if ! command -v go &> /dev/null; then
+  curl -Lo go_installer https://get.golang.org/linux && chmod +x go_installer && ./go_installer && rm go_installer
+fi
+
 if command -v go &> /dev/null; then
     go install golang.org/x/tools/cmd/goimports@latest
     go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
@@ -6,3 +16,6 @@ if command -v go &> /dev/null; then
     go install github.com/spf13/cobra-cli@latest
     go install github.com/swaggo/swag/cmd/swag@latest
 fi
+
+#export GOROOT=$(find $HOME/go/ -maxdepth 1 -type d -name 'go*' -print | sort -V | tail -n1)/bin
+export GOROOT=$HOME/go

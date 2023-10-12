@@ -1,0 +1,22 @@
+# set PATH so it includes user's private bin if it exists
+NEWBIN="$HOME/bin"
+if ! [[ "$PATH" =~ "$NEWBIN" ]]; then
+  [ -d "$NEWBIN" ] && PATH="$NEWBIN:$PATH"
+fi
+
+NEWBIN="$HOME/.local/bin"
+if ! [[ "$PATH" =~ "$NEWBIN" ]]; then
+  [ -d "$NEWBIN" ] && PATH="$NEWBIN:$PATH"
+fi
+
+if command -v go &> /dev/null; then
+    NEWBIN="$(go env GOPATH)/bin"
+    if ! [[ "$PATH" =~ "$NEWBIN" ]]; then
+    [ -d "$NEWBIN" ] && PATH="$NEWBIN:$PATH"
+    fi
+fi
+
+export PATH
+
+# Pretty print the path
+alias path='echo $PATH | tr -s ":" "\n"'

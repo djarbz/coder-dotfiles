@@ -1,0 +1,7 @@
+# Require confirmation before overwriting target files. This setting keeps me from deleting things I didn't expect to, etc
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+
+# Show top 20 large files in the current directory
+alias bigdirs='du --max-depth=1 2> /dev/null | sort -n -r | head -n20'

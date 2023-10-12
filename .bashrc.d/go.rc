@@ -4,16 +4,27 @@ if [ -d /usr/local/go ]; then
 fi
 
 # If Go is installed, we will find it here.
-export GOROOT=$(find $HOME/go/ -maxdepth 1 -type d -name 'go*' -print | sort -V | tail -n1)
+if [ -d $HOME/go/ ]; then
+  export GOROOT=$(find $HOME/go/ -maxdepth 1 -type d -name 'go*' -print | sort -V | tail -n1)
+fi
 
 # Install Golang if not already installed.
 if ! command -v "${GOROOT}/bin/go" &> /dev/null; then
   echo "Installing Golang"
-  #curl -Lo go_installer https://get.golang.org/linux && chmod +x go_installer && ./go_installer && rm go_installer
+  GITHUB_REPO="golang/go"
+  GITHUB_RELEASE_VERSION=$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' https://github.com/${GITHUB_REPO}.git | grep 'refs/tags/go' | grep -v rc | tail --lines=1 | cut --delimiter='/' --fields=3)
+  export GOROOT="$HOME/go/${GITHUB_RELEASE_VERSION}/"
+  mkdir -p "${GOROOT}"
+  mkdir -p "$HOME/go/bin"
+  curl -Ls "https://go.dev/dl/${GITHUB_RELEASE_VERSION}.linux-amd64.tar.gz" | tar -xzf - -C "${GOROOT}" --strip-components=1
 fi
 
 # Ensure that GOROOT is set to an actual directory.
-export GOROOT=$(find $HOME/go/ -maxdepth 1 -type d -name 'go*' -print | sort -V | tail -n1)
+if [ -d $HOME/go/ ]; then
+  export GOROOT=$(find $HOME/go/ -maxdepth 1 -type d -name 'go*' -print | sort -V | tail -n1)
+else
+  echo "Failed to install Golang"
+fi
 
 if command -v go &> /dev/null; then
   NEWBIN="$(go env GOPATH)/bin"

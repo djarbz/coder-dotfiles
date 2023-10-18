@@ -1,3 +1,0 @@
-# Prep cloned workspace via any found `coder.bootstrap` executable files in the project directory.
-
-find "${PROJECT_DIRECTORY}" -name coder.bootstrap -type f -executable -print -exec {} \;

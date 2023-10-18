@@ -1,2 +1,0 @@
-mkdir -p "$HOME/.local/bin/"
-curl -Ls https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz | tar -xJvf - -C "$HOME/.local/bin/" --strip-components=1 --wildcards */shellcheck

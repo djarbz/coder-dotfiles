@@ -1,15 +1,15 @@
-# Ensure that GOROOT is set to an actual directory.
-if [ -d $HOME/go/ ]; then
-  export GOROOT=$(find $HOME/go/ -maxdepth 1 -type d -name 'go*' -print | sort -V | tail -n1)
-else
-  echo "!!! Golang is not installed !!!"
+if [ -z "${JETBRAINS_IDE_ID}" ] || [ "${JETBRAINS_IDE_ID}" != "GO" ]; then
+  exit 0
 fi
 
-if command -v go &>/dev/null; then
-  NEWBIN="$(go env GOPATH)/bin"
-  if ! [[ "$PATH" =~ "$NEWBIN" ]]; then
-    [ -d "$NEWBIN" ] && PATH="$NEWBIN:$PATH"
-  fi
+if [ -d "${HOME}/go" ]; then
+  echo "Userland GOROOT exists..."
+  GOROOT=$(find "${HOME}/go" -maxdepth 1 -type d -name 'go*' -print | sort -V | tail -n1)
+  export GOROOT
 fi
 
-export PATH
+NEWBIN="$(go env GOPATH)/bin"
+if ! [[ "${PATH}" =~ ${NEWBIN} ]]; then
+  [ -d "${NEWBIN}" ] && PATH="${NEWBIN}:${PATH}"
+  export PATH
+fi

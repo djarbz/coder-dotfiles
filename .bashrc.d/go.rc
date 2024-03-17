@@ -1,5 +1,5 @@
 if [ -z "${JETBRAINS_IDE_ID}" ] || [ "${JETBRAINS_IDE_ID}" != "GO" ]; then
-  exit 0
+  return 0
 fi
 
 if [ -d "${HOME}/go" ]; then

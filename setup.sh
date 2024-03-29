@@ -26,5 +26,5 @@ fi
 # Prep cloned workspace via any found `coder.bootstrap` executable files in the project directory.
 if [ -v PROJECT_DIRECTORY ]; then
   echo "Prepping Project Workspace..."
-  find "${PROJECT_DIRECTORY}" -name coder.bootstrap -type f -executable -print -exec {} \;
+  find "${PROJECT_DIRECTORY}" -name coder.bootstrap -type f -print -exec bash {} \;
 fi

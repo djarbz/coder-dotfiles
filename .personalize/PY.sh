@@ -18,6 +18,8 @@ elif command -v python &> /dev/null; then
   python -m pip install --upgrade pip
 fi
 
+virtualenv "${PROJECT_DIRECTORY}/.venv" && source "${PROJECT_DIRECTORY}/.venv/bin/activate}"
+
 if command -v pip3 &> /dev/null; then
   echo "Installing required Python packages..."
   pip3 install -q pylint pyyaml

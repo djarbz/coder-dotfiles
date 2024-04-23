@@ -17,3 +17,14 @@ mkcd() {
 
 alias cls='clear'
 export HISTTIMEFORMAT="%y/%m/%d "
+
+## Quietly install APT package and update the cache if needed.
+function apt_install {
+  if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -60 &>/dev/null)" ]; then
+    echo "Stale package cache, updating..."
+    apt-get update
+  fi
+
+  echo "Installing packages [$@]"
+  apt-get install -qq $@ < /dev/null > /dev/null
+}

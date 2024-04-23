@@ -22,6 +22,12 @@ BINDIR="$HOME/.local/bin"
 export BINDIR
 mkdir -p "${BINDIR}"
 
+# Add local bin dir to PATH
+if ! [[ "${PATH}" =~ ${BINDIR} ]]; then
+  [ -d "${BINDIR}" ] && PATH="${BINDIR}:${PATH}"
+fi
+export PATH
+
 ## JQ
 echo "Installing JQ..."
 JQ_RELEASE_VERSION=$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' https://github.com/jqlang/jq.git | grep -v rc | tail --lines=1 | cut --delimiter='/' --fields=3)

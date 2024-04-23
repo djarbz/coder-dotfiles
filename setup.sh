@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+export SCRIPT_DIR
 DEBIAN_FRONTEND=noninteractive
+export DEBIAN_FRONTEND
 
 function apt_install {
   if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -60 &>/dev/null)" ]; then
@@ -15,6 +17,7 @@ function apt_install {
 export apt_install
 
 BINDIR="$HOME/.local/bin"
+export BINDIR
 mkdir -p "${BINDIR}"
 
 ## JQ

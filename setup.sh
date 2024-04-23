@@ -7,14 +7,14 @@ export DEBIAN_FRONTEND
 
 if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -60 &>/dev/null)" ]; then
   echo "Stale package cache, updating..."
-  sudo apt-get update
+  sudo apt-get -qq update
 fi
 
-apt-get install -yqq --no-install-recommends apt-utils
+sudo apt-get -qq install -o=Dpkg::Use-Pty=0 --no-install-recommends -y apt-utils git
 
 function apt_install {
   echo "Installing packages [$@]"
-  sudo apt-get install --no-install-recommends -yqq $@ # < /dev/null > /dev/null
+  sudo apt-get -qq install -o=Dpkg::Use-Pty=0 --no-install-recommends -y $@ > /dev/null
 }
 export apt_install
 
@@ -29,7 +29,6 @@ curl -SsL "https://github.com/jqlang/jq/releases/download/${JQ_RELEASE_VERSION}/
 
 
 echo "Installing Shellcheck..."
-mkdir -p "$HOME/.local/bin/"
 curl -SsL "https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJvf - -C "${BINDIR}/" --strip-components=1 --wildcards '*/shellcheck'
 
 

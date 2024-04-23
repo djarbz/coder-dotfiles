@@ -12,6 +12,7 @@ function apt_install {
   echo "Installing packages [$@]"
   apt-get install -qq $@ < /dev/null > /dev/null
 }
+export apt_install
 
 BINDIR="$HOME/.local/bin"
 mkdir -p "${BINDIR}"

@@ -4,13 +4,25 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 export SCRIPT_DIR
 DEBIAN_FRONTEND=noninteractive
 export DEBIAN_FRONTEND
+DEBCONF_NONINTERACTIVE_SEEN=true
+export DEBCONF_NONINTERACTIVE_SEEN
+
+echo "Updating Locale..."
+export LANG=en_US.UTF-8
+sudo sed -i -e "s/# $LANG.*/$LANG UTF-8/" /etc/locale.gen
+sudo dpkg-reconfigure --frontend=noninteractive locales
+sudo update-locale LANG=$LANG
+
+echo "Pre-Configuring TimeZone..."
+printf "tzdata tzdata/Areas select US\ntzdata tzdata/Zones/US select Central\n" | sudo debconf-set-selections
 
 if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -60 &>/dev/null)" ]; then
   echo "Stale package cache, updating..."
   sudo apt-get -qq update
 fi
 
-sudo apt-get -qq install -o=Dpkg::Use-Pty=0 --no-install-recommends -y apt-utils git
+sudo apt-get -qq install -o=Dpkg::Use-Pty=0 --no-install-recommends -y apt-utils tzdata git
+sudo dpkg-reconfigure -fnoninteractive tzdata
 
 function apt_install {
   echo "Installing packages [$@]"

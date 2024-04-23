@@ -18,17 +18,35 @@ elif command -v python &> /dev/null; then
   python -m pip install --upgrade pip
 fi
 
-virtualenv "${PROJECT_DIRECTORY}/.venv" && source "${PROJECT_DIRECTORY}/.venv/bin/activate}"
+if ! command -v pipx &> /dev/null; then
+  echo "Installing pipx..."
+  sudo apt update
+  sudo apt install pipx
+  pipx ensurepath
+fi
+
+if ! command -v virtualenv &> /ev/null; then
+  echo "Installing virtualenv..."
+  pipx install virtualenv
+fi
+
+pipx install pylint
+
+virtualenv "${PROJECT_DIRECTORY}/.venv"
+source "${PROJECT_DIRECTORY}/.venv/bin/activate}"
 
 if command -v pip3 &> /dev/null; then
-  echo "Installing required Python packages..."
-  pip3 install -q pylint pyyaml
-  pip3 install -q -r "${PYTHONPATH}/requirements.txt" --upgrade
+  PIP_COMMAND=pip3
 elif command -v pip &> /dev/null; then
-  echo "Installing required Python packages..."
-  pip install -q pylint pyyaml
-  pip install -q -r "${PYTHONPATH}/requirements.txt" --upgrade
+  PIP_COMMAND=pip
+else
+  echo "No PIP found!"
+  exit 1
 fi
+
+echo "Installing required Python packages via ${PIP_COMMAND}..."
+# ${PIP_COMMAND} install -q pylint pyyaml
+${PIP_COMMAND} install -q -r "${PYTHONPATH}/requirements.txt" --upgrade
 
 # TODO: Try to get this working?
 # Complains about PyCharm already running.

@@ -25,7 +25,7 @@ if ! command -v pipx &> /dev/null; then
   pipx ensurepath
 fi
 
-if ! command -v virtualenv &> /ev/null; then
+if ! command -v virtualenv &> /dev/null; then
   echo "Installing virtualenv..."
   pipx install virtualenv
 fi

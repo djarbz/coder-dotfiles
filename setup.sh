@@ -7,6 +7,8 @@ export DEBIAN_FRONTEND
 DEBCONF_NONINTERACTIVE_SEEN=true
 export DEBCONF_NONINTERACTIVE_SEEN
 
+echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
+
 function apt_install {
   echo "Installing packages [$@]"
   sudo apt-get -qq install -o=Dpkg::Use-Pty=0 --no-install-recommends -y $@ > /dev/null
@@ -70,3 +72,6 @@ if [ -v PROJECT_DIRECTORY ]; then
   echo "Prepping Project Workspace..."
   find "${PROJECT_DIRECTORY}" -name coder.bootstrap -type f -print -exec bash {} \;
 fi
+
+# Return to default
+echo 'debconf debconf/frontend select Dialog' | sudo debconf-set-selections

@@ -21,7 +21,7 @@ fi
 if ! command -v pipx &> /dev/null; then
   echo "Installing pipx..."
   apt_install pipx
-  pipx ensurepath
+  #pipx ensurepath # Ensures that pipx is in the PATH
 fi
 
 if ! command -v virtualenv &> /dev/null; then
@@ -29,10 +29,13 @@ if ! command -v virtualenv &> /dev/null; then
   pipx install virtualenv
 fi
 
-pipx install pylint
+if ! command -v pylint &> /dev/null; then
+  echo "Installing pylint..."
+  pipx install pylint
+fi
 
 virtualenv "${PROJECT_DIRECTORY}/.venv"
-source "${PROJECT_DIRECTORY}/.venv/bin/activate}"
+source "${PROJECT_DIRECTORY}/.venv/bin/activate"
 
 if command -v pip3 &> /dev/null; then
   PIP_COMMAND=pip3

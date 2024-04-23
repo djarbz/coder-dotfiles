@@ -20,7 +20,7 @@ fi
 
 if ! command -v pipx &> /dev/null; then
   echo "Installing pipx..."
-  sudo apt_install pipx
+  apt_install pipx
   pipx ensurepath
 fi
 

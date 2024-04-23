@@ -6,11 +6,11 @@ DEBIAN_FRONTEND=noninteractive
 function apt_install {
   if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -60 &>/dev/null)" ]; then
     echo "Stale package cache, updating..."
-    apt-get update
+    sudo apt-get update
   fi
 
   echo "Installing packages [$@]"
-  apt-get install -qq $@ < /dev/null > /dev/null
+  sudo apt-get install -qq $@ < /dev/null > /dev/null
 }
 export apt_install
 

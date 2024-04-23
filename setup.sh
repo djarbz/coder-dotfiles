@@ -5,14 +5,16 @@ export SCRIPT_DIR
 DEBIAN_FRONTEND=noninteractive
 export DEBIAN_FRONTEND
 
-function apt_install {
-  if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -60 &>/dev/null)" ]; then
-    echo "Stale package cache, updating..."
-    sudo apt-get update
-  fi
+if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -60 &>/dev/null)" ]; then
+  echo "Stale package cache, updating..."
+  sudo apt-get update
+fi
 
+apt-get install -yqq --no-install-recommends apt-utils
+
+function apt_install {
   echo "Installing packages [$@]"
-  sudo apt-get install -qq $@ < /dev/null > /dev/null
+  sudo apt-get install --no-install-recommends -yqq $@ # < /dev/null > /dev/null
 }
 export apt_install
 

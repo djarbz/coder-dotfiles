@@ -10,8 +10,8 @@ export DEBCONF_NONINTERACTIVE_SEEN
 echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 
 function apt_install {
-  echo "Installing packages [$@]"
-  sudo apt-get -qq install -o=Dpkg::Use-Pty=0 --no-install-recommends -y $@ > /dev/null
+  echo "Installing packages [$*]"
+  sudo apt-get -qq install -o=Dpkg::Use-Pty=0 --no-install-recommends -y "$@" > /dev/null
 }
 export apt_install
 

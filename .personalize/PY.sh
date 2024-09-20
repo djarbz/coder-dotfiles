@@ -12,10 +12,12 @@ export PYTHONPATH
 
 if command -v python3 &> /dev/null; then
   echo "Installing/Upgrading Python PIP..."
-  python3 -m pip install --upgrade pip
+  # python3 -m pip install --upgrade pip
+  apt_install python3-pip
 elif command -v python &> /dev/null; then
   echo "Installing/Upgrading Python PIP..."
-  python -m pip install --upgrade pip
+  # python -m pip install --upgrade pip
+  apt_install python-pip
 fi
 
 if ! command -v pipx &> /dev/null; then
@@ -34,7 +36,8 @@ if ! command -v pylint &> /dev/null; then
   pipx install pylint
 fi
 
-virtualenv "${PROJECT_DIRECTORY}/.venv"
+# virtualenv "${PROJECT_DIRECTORY}/.venv"
+python3 -m venv "${PROJECT_DIRECTORY}/.venv"
 source "${PROJECT_DIRECTORY}/.venv/bin/activate"
 
 if command -v pip3 &> /dev/null; then

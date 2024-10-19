@@ -9,8 +9,7 @@ export DEBCONF_NONINTERACTIVE_SEEN
 
 sleep 10
 # Wait until no files matching the pattern exist
-while ls /tmp/kasmvncserver.* 1> /dev/null 2>&1; do
-  # Sleep for a bit before checking again
+while find /tmp -name 'kasmvncserver.*' ! -name '*.log' | grep -q .; do
   sleep 1
 done
 

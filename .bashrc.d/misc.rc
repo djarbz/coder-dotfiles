@@ -20,6 +20,10 @@ export HISTTIMEFORMAT="%y/%m/%d "
 
 ## Quietly install APT package and update the cache if needed.
 function apt_install {
+  while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
+      echo "Waiting for apt lock to be released..."
+      sleep 5
+  done
   if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -60 &>/dev/null)" ]; then
     echo "Stale package cache, updating..."
     sudo apt-get update

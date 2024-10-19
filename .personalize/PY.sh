@@ -36,6 +36,7 @@ if ! command -v pylint &> /dev/null; then
   pipx install pylint
 fi
 
+echo "Creating Virtual Environment"
 # virtualenv "${PROJECT_DIRECTORY}/.venv"
 python3 -m venv "${PROJECT_DIRECTORY}/.venv"
 source "${PROJECT_DIRECTORY}/.venv/bin/activate"

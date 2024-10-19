@@ -10,12 +10,20 @@ export DEBCONF_NONINTERACTIVE_SEEN
 echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 
 function apt_install {
+  while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
+      echo "Waiting for apt lock to be released..."
+      sleep 5
+  done
   echo "Installing packages [$*]"
-  sudo apt-get -qq install -o=Dpkg::Use-Pty=0 --no-install-recommends -y "$@" > /dev/null
+  sudo apt-get install -o=Dpkg::Use-Pty=0 --no-install-recommends -yqq "$@" > /dev/null
 }
 export apt_install
 
 if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -60 &>/dev/null)" ]; then
+  while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
+      echo "Waiting for apt lock to be released..."
+      sleep 5
+  done
   echo "Stale package cache, updating..."
   sudo apt-get -qq update
 fi

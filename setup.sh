@@ -43,7 +43,7 @@ sudo update-locale LANG=$LANG
 # echo "Pre-Configuring TimeZone..."
 # printf "tzdata tzdata/Areas select US\ntzdata tzdata/Zones/US select Central\n" | sudo debconf-set-selections
 
-apt_install apt-utils tzdata git
+apt_install apt-utils tzdata git xz-utils
 sudo ln -sf /usr/share/zoneinfo/US/Central /etc/localtime
 sudo dpkg-reconfigure --frontend=noninteractive tzdata
 

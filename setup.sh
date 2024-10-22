@@ -7,45 +7,52 @@ export DEBIAN_FRONTEND
 DEBCONF_NONINTERACTIVE_SEEN=true
 export DEBCONF_NONINTERACTIVE_SEEN
 
-sleep 10
-# Wait until no files matching the pattern exist
-while find /tmp -maxdepth 1 -name 'kasmvncserver.*' ! -name '*.log' 2>/dev/null | grep -q .; do
-  sleep 1
-done
+# sleep 10
+# # Wait until no files matching the pattern exist
+# while find /tmp -maxdepth 1 -name 'kasmvncserver.*' ! -name '*.log' 2>/dev/null | grep -q .; do
+#   sleep 1
+# done
 
 echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 
 function apt_install {
-  while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
-      echo "Waiting for apt lock to be released..."
-      sleep 5
-  done
+  # Define the directory to check
+  CACHE_DIR="/var/lib/apt/lists/partial"
+  # Determine if we need to prefix commands with sudo
+  SUDO=""
+  if [ "$(id -u)" -ne 0 ]; then
+    SUDO="sudo"
+  fi
+  # Check if the directory exists and was modified in the last 60 minutes
+  if [ ! -d "$CACHE_DIR" ] || ! find "$CACHE_DIR" -mmin -60 -print -quit &>/dev/null; then
+    echo "Stale Package Cache, updating..."
+    # Update package cache with a 300-second timeout for dpkg lock
+    ${SUDO} apt-get -o DPkg::Lock::Timeout=300 -qq update
+  fi
+
   echo "Installing packages [$*]"
-  sudo apt-get install -o=Dpkg::Use-Pty=0 --no-install-recommends -yqq "$@" > /dev/null
+  ${SUDO} apt-get -o DPkg::Lock::Timeout=300 install -o=Dpkg::Use-Pty=0 --no-install-recommends -yqq "$@" > /dev/null
 }
 export apt_install
 
-if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -60 &>/dev/null)" ]; then
-  while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
-      echo "Waiting for apt lock to be released..."
-      sleep 5
-  done
-  echo "Stale package cache, updating..."
-  sudo apt-get -qq update
+# Determine if we need to prefix commands with sudo
+SUDO=""
+if [ "$(id -u)" -ne 0 ]; then
+  SUDO="sudo"
 fi
 
 echo "Updating Locale..."
 export LANG=en_US.UTF-8
-sudo sed -i -e "s/# $LANG.*/$LANG UTF-8/" /etc/locale.gen
-sudo dpkg-reconfigure --frontend=noninteractive locales
-sudo update-locale LANG=$LANG
+${SUDO} sed -i -e "s/# $LANG.*/$LANG UTF-8/" /etc/locale.gen
+${SUDO} dpkg-reconfigure --frontend=noninteractive locales
+${SUDO} update-locale LANG=$LANG
 
 # echo "Pre-Configuring TimeZone..."
-# printf "tzdata tzdata/Areas select US\ntzdata tzdata/Zones/US select Central\n" | sudo debconf-set-selections
+# printf "tzdata tzdata/Areas select US\ntzdata tzdata/Zones/US select Central\n" | ${SUDO} debconf-set-selections
 
 apt_install apt-utils tzdata git xz-utils
-sudo ln -sf /usr/share/zoneinfo/US/Central /etc/localtime
-sudo dpkg-reconfigure --frontend=noninteractive tzdata
+${SUDO} ln -sf /usr/share/zoneinfo/US/Central /etc/localtime
+${SUDO} dpkg-reconfigure --frontend=noninteractive tzdata
 
 BINDIR="$HOME/.local/bin"
 export BINDIR

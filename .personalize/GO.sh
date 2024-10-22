@@ -4,9 +4,15 @@ set -e
 
 echo "Applying personalization for Goland..."
 
+# Determine if we need to prefix commands with sudo
+SUDO=""
+if [ "$(id -u)" -ne 0 ]; then
+  SUDO="sudo"
+fi
+
 if [ -d /usr/local/go ]; then
   echo "Removing the systemwide version of GO..."
-  sudo rm -rf /usr/local/go
+  ${SUDO} rm -rf /usr/local/go
 fi
 
 GO_VERSION=$(curl -s 'https://go.dev/VERSION?m=text' | head -n 1)
@@ -37,7 +43,7 @@ fi
 export PATH
 export GOROOT
 
-cat << 'EOF' | sudo tee /etc/profile.d/golang.sh > /dev/null
+cat << 'EOF' | ${SUDO} tee /etc/profile.d/golang.sh > /dev/null
 #!/usr/bin/env bash
 # Set $GOROOT and update $PATH for Golang
 
@@ -74,7 +80,7 @@ fi
 EOF
 
 # Ensure the script has execute permissions
-sudo chmod +x /etc/profile.d/golang.sh
+${SUDO} chmod +x /etc/profile.d/golang.sh
 
 echo "Profile script created and permissions set."
 

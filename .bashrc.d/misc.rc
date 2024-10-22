@@ -20,15 +20,20 @@ export HISTTIMEFORMAT="%y/%m/%d "
 
 ## Quietly install APT package and update the cache if needed.
 function apt_install {
-  while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
-      echo "Waiting for apt lock to be released..."
-      sleep 5
-  done
-  if [ -z "$(find /var/cache/apt/pkgcache.bin -mmin -60 &>/dev/null)" ]; then
-    echo "Stale package cache, updating..."
-    sudo apt-get update
+  # Define the directory to check
+  CACHE_DIR="/var/lib/apt/lists/partial"
+  # Determine if we need to prefix commands with sudo
+  SUDO=""
+  if [ "$(id -u)" -ne 0 ]; then
+    SUDO="sudo"
+  fi
+  # Check if the directory exists and was modified in the last 60 minutes
+  if [ ! -d "$CACHE_DIR" ] || ! find "$CACHE_DIR" -mmin -60 -print -quit &>/dev/null; then
+    echo "Stale Package Cache, updating..."
+    # Update package cache with a 300-second timeout for dpkg lock
+    ${SUDO} apt-get -o DPkg::Lock::Timeout=300 -qq update
   fi
 
   echo "Installing packages [$@]"
-  sudo apt-get install -qq $@ < /dev/null > /dev/null
+  ${SUDO} apt-get -o DPkg::Lock::Timeout=300 install -qq $@ < /dev/null > /dev/null
 }

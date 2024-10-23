@@ -32,8 +32,8 @@ function apt_install {
   if [ "$(id -u)" -ne 0 ]; then
     SUDO="sudo"
   fi
-  # Check if the directory exists and was modified in the last 60 minutes
-  if [ ! -d "$CACHE_DIR" ] || ! find "$CACHE_DIR" -mmin -60 -print -quit &>/dev/null; then
+  # Check if the directory exists and was modified in the last 5 minutes
+  if [ ! -d "$CACHE_DIR" ] || ! find "$CACHE_DIR" -mmin -5 -print -quit &>/dev/null; then
     echo "Stale Package Cache, updating..."
     # Update package cache with a 300-second timeout for dpkg lock
     ${SUDO} apt-get -o DPkg::Lock::Timeout=300 -qq update

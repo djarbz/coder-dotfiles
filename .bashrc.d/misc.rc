@@ -34,6 +34,6 @@ function apt_install {
     ${SUDO} apt-get -o DPkg::Lock::Timeout=300 -qq update
   fi
 
-  echo "Installing packages [$@]"
-  ${SUDO} apt-get -o DPkg::Lock::Timeout=300 install -qq $@ < /dev/null > /dev/null
+  echo "Installing packages [$*]"
+  ${SUDO} apt-get -o DPkg::Lock::Timeout=300 install -o=Dpkg::Use-Pty=0 --no-install-recommends -yqq "$@" < /dev/null > /dev/null
 }

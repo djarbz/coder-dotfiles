@@ -44,16 +44,16 @@ fi
 echo "Updating Locale..."
 export LANG=en_US.UTF-8
 ${SUDO} sed -i -e "s/# $LANG.*/$LANG UTF-8/" /etc/locale.gen
-# flock will wait for the DPKG lock to release
-${SUDO} flock /var/lib/dpkg/lock -c "${SUDO} dpkg-reconfigure --frontend=noninteractive locales"
+echo 'locales locales/default_environment_locale select en_US.UTF-8' | ${SUDO} debconf-set-selections
 ${SUDO} update-locale LANG=$LANG
 
 # echo "Pre-Configuring TimeZone..."
 # printf "tzdata tzdata/Areas select US\ntzdata tzdata/Zones/US select Central\n" | ${SUDO} debconf-set-selections
+echo 'tzdata tzdata/Areas select America' | ${SUDO} debconf-set-selections
+echo 'tzdata tzdata/Zones/America select Chicago' | ${SUDO} debconf-set-selections
 
 apt_install apt-utils tzdata git xz-utils
-${SUDO} ln -sf /usr/share/zoneinfo/US/Central /etc/localtime
-${SUDO} flock /var/lib/dpkg/lock -c "${SUDO} dpkg-reconfigure --frontend=noninteractive tzdata"
+${SUDO} apt-get -o DPkg::Lock::Timeout=300 install --reinstall -o=Dpkg::Use-Pty=0 --no-install-recommends -yqq locales
 
 BINDIR="$HOME/.local/bin"
 export BINDIR

@@ -77,6 +77,13 @@ curl -SsL "https://github.com/jqlang/jq/releases/download/${JQ_RELEASE_VERSION}/
 echo "Installing Shellcheck..."
 curl -SsL "https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJvf - -C "${BINDIR}/" --strip-components=1 --wildcards '*/shellcheck'
 
+# Update and apply changes to workspace repository
+if [ -v PROJECT_DIRECTORY ]; then
+  # Sync remote changes
+  git -C "${PROJECT_DIRECTORY}" fetch origin
+  # Apply updates if no conflicts
+  git -C "${PROJECT_DIRECTORY}" merge origin/master --ff-only
+fi
 
 # Check if using a Jetbrains IDE
 if [ -n "${JETBRAINS_IDE_ID}" ]; then

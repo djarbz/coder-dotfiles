@@ -79,6 +79,7 @@ curl -SsL "https://github.com/koalaman/shellcheck/releases/download/stable/shell
 
 # Update and apply changes to workspace repository
 if [ -v PROJECT_DIRECTORY ]; then
+  echo "Checking for project updates"
   # Sync remote changes
   git -C "${PROJECT_DIRECTORY}" fetch origin
   # Apply updates if no conflicts

@@ -44,7 +44,8 @@ fi
 echo "Updating Locale..."
 export LANG=en_US.UTF-8
 ${SUDO} sed -i -e "s/# $LANG.*/$LANG UTF-8/" /etc/locale.gen
-${SUDO} dpkg-reconfigure --frontend=noninteractive locales
+# flock will wait for the DPKG lock to release
+flock /var/lib/dpkg/lock -c "${SUDO} dpkg-reconfigure --frontend=noninteractive locales"
 ${SUDO} update-locale LANG=$LANG
 
 # echo "Pre-Configuring TimeZone..."
@@ -52,7 +53,7 @@ ${SUDO} update-locale LANG=$LANG
 
 apt_install apt-utils tzdata git xz-utils
 ${SUDO} ln -sf /usr/share/zoneinfo/US/Central /etc/localtime
-${SUDO} dpkg-reconfigure --frontend=noninteractive tzdata
+flock /var/lib/dpkg/lock -c "${SUDO} dpkg-reconfigure --frontend=noninteractive tzdata"
 
 BINDIR="$HOME/.local/bin"
 export BINDIR

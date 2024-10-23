@@ -7,6 +7,12 @@ export DEBIAN_FRONTEND
 DEBCONF_NONINTERACTIVE_SEEN=true
 export DEBCONF_NONINTERACTIVE_SEEN
 
+# Determine if we need to prefix commands with sudo
+SUDO=""
+if [ "$(id -u)" -ne 0 ]; then
+  SUDO="sudo"
+fi
+
 # Exit on error, undefined variables, and pipe failures
 set -euo pipefail
 
@@ -16,7 +22,7 @@ set -euo pipefail
 #   sleep 1
 # done
 
-echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
+echo 'debconf debconf/frontend select Noninteractive' | ${SUDO} debconf-set-selections
 
 function apt_install {
   # Define the directory to check
@@ -37,12 +43,6 @@ function apt_install {
   ${SUDO} apt-get -o DPkg::Lock::Timeout=300 install -o=Dpkg::Use-Pty=0 --no-install-recommends -yqq "$@" > /dev/null
 }
 export apt_install
-
-# Determine if we need to prefix commands with sudo
-SUDO=""
-if [ "$(id -u)" -ne 0 ]; then
-  SUDO="sudo"
-fi
 
 echo "Updating Locale..."
 export LANG=en_US.UTF-8
@@ -99,4 +99,4 @@ if [ -v PROJECT_DIRECTORY ]; then
 fi
 
 # Return to default
-echo 'debconf debconf/frontend select Dialog' | sudo debconf-set-selections
+echo 'debconf debconf/frontend select Dialog' | ${SUDO} debconf-set-selections

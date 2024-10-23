@@ -87,7 +87,7 @@ if [ -v PROJECT_DIRECTORY ]; then
 fi
 
 # Check if using a Jetbrains IDE
-if [ -v "${JETBRAINS_IDE_ID}" ]; then
+if [ -v JETBRAINS_IDE_ID ]; then
   echo "Checking for Jetbrains language specific personalizations..."
   JETBRAINS_PERSONALIZATION_SCRIPT="${SCRIPT_DIR}/.personalize/${JETBRAINS_IDE_ID}.sh"
   # Check if there is a Jetbrains customization script

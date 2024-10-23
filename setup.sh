@@ -7,6 +7,9 @@ export DEBIAN_FRONTEND
 DEBCONF_NONINTERACTIVE_SEEN=true
 export DEBCONF_NONINTERACTIVE_SEEN
 
+# Exit on error, undefined variables, and pipe failures
+set -euo pipefail
+
 # sleep 10
 # # Wait until no files matching the pattern exist
 # while find /tmp -maxdepth 1 -name 'kasmvncserver.*' ! -name '*.log' 2>/dev/null | grep -q .; do

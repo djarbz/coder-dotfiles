@@ -93,6 +93,7 @@ if [ -v JETBRAINS_IDE_ID ]; then
   # Check if there is a Jetbrains customization script
   if [ -f "${JETBRAINS_PERSONALIZATION_SCRIPT}" ]; then
     echo "Applying Jetbrains [${JETBRAINS_IDE_ID}] config..."
+    # shellcheck disable=SC1090
     source "${JETBRAINS_PERSONALIZATION_SCRIPT}"
   else
     echo "Jetbrains personalization script not found!"

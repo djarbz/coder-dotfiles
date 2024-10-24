@@ -83,7 +83,7 @@ if [ -v PROJECT_DIRECTORY ]; then
   # Sync remote changes
   git -C "${PROJECT_DIRECTORY}" fetch origin
   # Apply updates if no conflicts
-  git -C "${PROJECT_DIRECTORY}" merge origin/master --ff-only
+  git -C "${PROJECT_DIRECTORY}" merge origin/main --ff-only
 fi
 
 # Check if using a Jetbrains IDE

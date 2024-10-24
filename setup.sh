@@ -80,10 +80,11 @@ curl -SsL "https://github.com/koalaman/shellcheck/releases/download/stable/shell
 # Update and apply changes to workspace repository
 if [ -v PROJECT_DIRECTORY ]; then
   echo "Checking for project updates"
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
   # Sync remote changes
   git -C "${PROJECT_DIRECTORY}" fetch origin
   # Apply updates if no conflicts
-  git -C "${PROJECT_DIRECTORY}" merge origin/main --ff-only
+  git -C "${PROJECT_DIRECTORY}" merge "origin/${current_branch}" --ff-only
 fi
 
 # Check if using a Jetbrains IDE
@@ -99,7 +100,6 @@ if [ -v JETBRAINS_IDE_ID ]; then
     echo "Jetbrains personalization script not found!"
   fi
 fi
-
 
 # Prep cloned workspace via any found `coder.bootstrap` executable files in the project directory.
 if [ -v PROJECT_DIRECTORY ]; then

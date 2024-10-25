@@ -79,12 +79,24 @@ curl -SsL "https://github.com/koalaman/shellcheck/releases/download/stable/shell
 
 # Update and apply changes to workspace repository
 if [ -v PROJECT_DIRECTORY ]; then
-  echo "Checking for project updates"
-  current_branch=$(git rev-parse --abbrev-ref HEAD)
+  echo "Checking for project updates in ${PROJECT_DIRECTORY}"
+
+  # Capture the current branch name
+  current_branch=$(git -C "${PROJECT_DIRECTORY}" rev-parse --abbrev-ref HEAD || { echo "Failed to get current branch"; exit 1; })
+
   # Sync remote changes
-  git -C "${PROJECT_DIRECTORY}" fetch origin
-  # Apply updates if no conflicts
-  git -C "${PROJECT_DIRECTORY}" merge "origin/${current_branch}" --ff-only
+  if ! git -C "${PROJECT_DIRECTORY}" fetch origin; then
+    echo "Failed to fetch from origin"
+    exit 1
+  fi
+
+  # Fast-forward merge updates if no conflicts
+  if ! git -C "${PROJECT_DIRECTORY}" merge --ff-only "origin/${current_branch}"; then
+    echo "Failed to fast-forward merge on branch ${current_branch}"
+    exit 1
+  fi
+
+  echo "Project updated successfully on branch ${current_branch}"
 fi
 
 # Check if using a Jetbrains IDE

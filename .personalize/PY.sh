@@ -11,13 +11,23 @@ PYTHONPATH="${PROJECT_DIRECTORY}"
 export PYTHONPATH
 
 if command -v python3 &> /dev/null; then
-  echo "Installing/Upgrading Python PIP..."
-  # python3 -m pip install --upgrade pip
-  apt_install python3-pip
+  echo "Installing/Upgrading Pytho3n Dev resources..."
+  apt_install python3-dev
 elif command -v python &> /dev/null; then
-  echo "Installing/Upgrading Python PIP..."
+  echo "Installing/Upgrading Python Dev resources..."
+  apt_install python-dev
+fi
+
+if command -v python3 &> /dev/null; then
+  echo "Installing/Upgrading Python3 PIP and Dev resources..."
+  # python3 -m pip install --upgrade pip
+  apt_install python3-dev python3-pip
+  PY_COMMAND=python3
+elif command -v python &> /dev/null; then
+  echo "Installing/Upgrading Python PIP and Dev resources..."
   # python -m pip install --upgrade pip
-  apt_install python-pip
+  apt_install python-dev python-pip
+  PY_COMMAND=python
 fi
 
 if ! command -v pipx &> /dev/null; then
@@ -38,7 +48,7 @@ fi
 
 echo "Creating Virtual Environment"
 # virtualenv "${PROJECT_DIRECTORY}/.venv"
-python3 -m venv "${PROJECT_DIRECTORY}/.venv"
+${PY_COMMAND} -m venv "${PROJECT_DIRECTORY}/.venv"
 source "${PROJECT_DIRECTORY}/.venv/bin/activate"
 
 if command -v pip3 &> /dev/null; then

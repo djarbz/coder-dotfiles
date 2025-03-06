@@ -11,14 +11,6 @@ PYTHONPATH="${PROJECT_DIRECTORY}"
 export PYTHONPATH
 
 if command -v python3 &> /dev/null; then
-  echo "Installing/Upgrading Pytho3n Dev resources..."
-  apt_install python3-dev
-elif command -v python &> /dev/null; then
-  echo "Installing/Upgrading Python Dev resources..."
-  apt_install python-dev
-fi
-
-if command -v python3 &> /dev/null; then
   echo "Installing/Upgrading Python3 PIP and Dev resources..."
   # python3 -m pip install --upgrade pip
   apt_install python3-dev python3-pip

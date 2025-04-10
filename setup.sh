@@ -117,6 +117,9 @@ fi
 if [ -v PROJECT_DIRECTORY ]; then
   echo "Prepping Project Workspace..."
   find "${PROJECT_DIRECTORY}" -name coder.bootstrap -type f -print -exec bash {} \;
+  if [ -d "${PROJECT_DIRECTORY}/.coder/bootstrap.d" ]; then
+    find "${PROJECT_DIRECTORY}/.coder/bootstrap.d" -type f -executable -print -exec bash {} \;
+  fi
 fi
 
 # Return to default

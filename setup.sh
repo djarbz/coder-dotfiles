@@ -45,18 +45,25 @@ function apt_install {
 export apt_install
 
 echo "Updating Locale..."
+start_time=$SECONDS
 export LANG=en_US.UTF-8
 ${SUDO} sed -i -e "s/# $LANG.*/$LANG UTF-8/" /etc/locale.gen
 echo 'locales locales/default_environment_locale select en_US.UTF-8' | ${SUDO} debconf-set-selections
 ${SUDO} update-locale LANG=$LANG
+elapsed_seconds=$((SECONDS - start_time))
+echo "Execution time: $elapsed_seconds seconds"
 
 # echo "Pre-Configuring TimeZone..."
 # printf "tzdata tzdata/Areas select US\ntzdata tzdata/Zones/US select Central\n" | ${SUDO} debconf-set-selections
 echo 'tzdata tzdata/Areas select America' | ${SUDO} debconf-set-selections
 echo 'tzdata tzdata/Zones/America select Chicago' | ${SUDO} debconf-set-selections
 
+echo "Installing packages..."
+start_time=$SECONDS
 apt_install apt-utils tzdata git xz-utils
 ${SUDO} apt-get -o DPkg::Lock::Timeout=300 install --reinstall -o=Dpkg::Use-Pty=0 --no-install-recommends -yqq locales
+elapsed_seconds=$((SECONDS - start_time))
+echo "Execution time: $elapsed_seconds seconds"
 
 BINDIR="$HOME/.local/bin"
 export BINDIR
@@ -70,12 +77,18 @@ export PATH
 
 ## JQ
 echo "Installing JQ..."
+start_time=$SECONDS
 JQ_RELEASE_VERSION=$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' https://github.com/jqlang/jq.git | grep -v rc | tail --lines=1 | cut --delimiter='/' --fields=3)
 curl -SsL "https://github.com/jqlang/jq/releases/download/${JQ_RELEASE_VERSION}/jq-linux-amd64" -o "${BINDIR}/jq"
+elapsed_seconds=$((SECONDS - start_time))
+echo "Execution time: $elapsed_seconds seconds"
 
 
 echo "Installing Shellcheck..."
+start_time=$SECONDS
 curl -SsL "https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJvf - -C "${BINDIR}/" --strip-components=1 --wildcards '*/shellcheck'
+elapsed_seconds=$((SECONDS - start_time))
+echo "Execution time: $elapsed_seconds seconds"
 
 # Update and apply changes to workspace repository
 # if [ -v PROJECT_DIRECTORY ]; then
@@ -100,6 +113,7 @@ curl -SsL "https://github.com/koalaman/shellcheck/releases/download/stable/shell
 # fi
 
 # Check if using a Jetbrains IDE
+start_time=$SECONDS
 if [ -v JETBRAINS_IDE_ID ]; then
   echo "Checking for Jetbrains language specific personalizations..."
   JETBRAINS_PERSONALIZATION_SCRIPT="${SCRIPT_DIR}/.personalize/${JETBRAINS_IDE_ID}.sh"
@@ -112,8 +126,11 @@ if [ -v JETBRAINS_IDE_ID ]; then
     echo "Jetbrains personalization script not found!"
   fi
 fi
+elapsed_seconds=$((SECONDS - start_time))
+echo "Execution time: $elapsed_seconds seconds"
 
 # Prep cloned workspace via any found `coder.bootstrap` executable files in the project directory.
+start_time=$SECONDS
 if [ -v PROJECT_DIRECTORY ]; then
   echo "Prepping Project Workspace..."
   find "${PROJECT_DIRECTORY}" -name coder.bootstrap -type f -print -exec bash {} \;
@@ -121,6 +138,8 @@ if [ -v PROJECT_DIRECTORY ]; then
     find "${PROJECT_DIRECTORY}/.coder/bootstrap.d" -type f -executable -print -exec bash {} \;
   fi
 fi
+elapsed_seconds=$((SECONDS - start_time))
+echo "Execution time: $elapsed_seconds seconds"
 
 # Return to default
 echo 'debconf debconf/frontend select Dialog' | ${SUDO} debconf-set-selections
